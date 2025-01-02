@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Assistente Virtuale Università</title>
+    <style>
+        /* Stili di base per il widget */
+        #chatbot-container {
+            width: 400px;
+            height: 500px;
+            border: 1px solid #ccc;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+        #chatbot-messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        #chatbot-input {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+        #chatbot-input textarea {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            resize: none;
+            font-size: 14px;
+        }
+        #chatbot-input button {
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        /* Stili per i messaggi */
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+        }
+        .bot {
+            background-color: #f1f0f0;
+            align-self: flex-start;
+        }
+        /* Stili per l'indicatore di caricamento */
+        #loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 10px;
+        }
+        /* Animazione della clessidra */
+        .hourglass {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid #007bff;
+            position: relative;
+            animation: spin 1s linear infinite;
+        }
+        .hourglass:after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: -15px;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 25px solid #007bff;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="chatbot-container">
+    <div id="chatbot-messages"></div>
+    <!-- Indicatore di caricamento -->
+    <div id="loading-indicator">
+        <div class="hourglass"></div>
+    </div>
+    <div id="chatbot-input">
+        <textarea id="user-input" placeholder="Scrivi un messaggio..."></textarea>
+        <button id="send-button">Invia</button>
+    </div>
+</div>
+
+<script>
+    // Elementi DOM
+    const messagesContainer = document.getElementById('chatbot-messages');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const loadingIndicator = document.getElementById('loading-indicator');
+
+    // Funzione per aggiungere messaggi al container
+    function addMessage(sender, text) {
+        const messageElem = document.createElement('div');
+        messageElem.classList.add('message', sender);
+        messageElem.innerHTML = text.replace(/\n/g, '<br>');
+        messagesContainer.appendChild(messageElem);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Funzione per gestire l'invio della query
+    function sendQuery() {
+        const query = userInput.value.trim();
+        if (query) {
+            addMessage('user', query);
+            userInput.value = '';
+            // Mostra l'indicatore di caricamento
+            loadingIndicator.style.display = 'block';
+            // Disabilita il campo di input e il pulsante
+            userInput.disabled = true;
+            sendButton.disabled = true;
+
+            // Invia la query al backend
+            fetch('http://localhost:8000/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                addMessage('bot', data.answer);
+            })
+            .catch(error => {
+                console.error('Errore:', error);
+                addMessage('bot', 'Si è verificato un errore. Riprova più tardi.');
+            })
+            .finally(() => {
+                // Nascondi l'indicatore di caricamento
+                loadingIndicator.style.display = 'none';
+                // Riabilita il campo di input e il pulsante
+                userInput.disabled = false;
+                sendButton.disabled = false;
+                userInput.focus();
+            });
+        }
+    }
+
+    // Gestione dell'evento click sul pulsante "Invia"
+    sendButton.addEventListener('click', sendQuery);
+
+    // Gestione dell'evento "Enter" nella textarea
+    userInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendQuery();
+        }
+    });
+</script>
+
+</body>
+</html>
