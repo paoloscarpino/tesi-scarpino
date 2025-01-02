@@ -3,3 +3,5 @@ chromadb
 fastapi
 uvicorn
 openai
+pandas
+PyPDF2

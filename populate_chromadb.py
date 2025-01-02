@@ -83,8 +83,8 @@ def main(pdf_path):
     """
     dataset_csv = "dataset_preprocessato.csv"
     embeddings_csv = "embeddings_dataset.csv"
-    chroma_db_path = "./chroma_db"
-    collection_name = "university_assistant"
+    chroma_db_path = "./chroma_db_mercatorum"
+    collection_name = "assistent_virtuale_universita"
 
     # Preprocessa il PDF
     leggi_e_preprocessa_pdf(pdf_path, dataset_csv)

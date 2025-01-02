@@ -169,3 +169,10 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+dataset_preprocessato.csv
+embeddings_dataset.csv
+
+chroma_db_mercatorum/*
+
+.DS_Store

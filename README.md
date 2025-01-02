@@ -44,7 +44,7 @@ Questo progetto implementa un'architettura **Retrieval-Augmented Generation (RAG
 1. Preprocessa i Dati Assicurati che i documenti della knowledge base siano preprocessati utilizzando il codice fornito nel progetto.
 2. Crea gli Embedding e Popola ChromaDB:
    ```bash
-   python populate_chromadb.py
+   python populate_chromadb.py 
    ```
 ## Avvio del Backend
 
