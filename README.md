@@ -13,7 +13,8 @@ Questo progetto implementa un'architettura **Retrieval-Augmented Generation (RAG
    - `uvicorn`
    - `openai`
 4. Modello **MPNet multilingue**: `paraphrase-multilingual-mpnet-base-v2`
-5. Accesso a **OpenAI API** (__inserire la api-key__).
+5. Accesso a **OpenAI API** (<u>Inserire la api-key</u>).
+
 
 ## Configurazione dell'Ambiente
 
